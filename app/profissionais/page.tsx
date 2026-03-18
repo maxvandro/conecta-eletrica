@@ -20,6 +20,16 @@ export default function ProfissionaisPage() {
     setProfissionais(lista);
   }, []);
 
+  function excluirProfissional(id: number) {
+    const confirmar = confirm("Tem certeza que deseja excluir este profissional?");
+    if (!confirmar) return;
+
+    const atualizados = profissionais.filter((p) => p.id !== id);
+
+    localStorage.setItem("profissionais", JSON.stringify(atualizados));
+    setProfissionais(atualizados);
+  }
+
   return (
     <main
       style={{
@@ -75,109 +85,115 @@ export default function ProfissionaisPage() {
         </p>
 
         {profissionais.length === 0 ? (
-          <div
-            style={{
-              background: "rgba(255,255,255,0.10)",
-              border: "1px solid rgba(255,255,255,0.18)",
-              backdropFilter: "blur(6px)",
-              borderRadius: "20px",
-              padding: "24px",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.20)",
-            }}
-          >
+          <div style={cardVazio}>
             <p style={{ margin: 0 }}>Nenhum profissional cadastrado ainda.</p>
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: "18px",
-            }}
-          >
+          <div style={grid}>
             {profissionais.map((profissional) => (
-              <div
-                key={profissional.id}
-                style={{
-                  background: "rgba(255,255,255,0.10)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  backdropFilter: "blur(6px)",
-                  borderRadius: "20px",
-                  padding: "22px",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.20)",
-                  color: "#ffffff",
-                }}
-              >
-                <h2
-                  style={{
-                    margin: "0 0 12px 0",
-                    fontSize: "22px",
-                    color: "#ffd54a",
-                  }}
-                >
-                  {profissional.nome}
-                </h2>
+              <div key={profissional.id} style={card}>
+                <h2 style={nome}>{profissional.nome}</h2>
 
-                <p style={{ margin: "0 0 8px 0" }}>
-                  <strong>Email:</strong> {profissional.email}
-                </p>
+                <p><strong>Email:</strong> {profissional.email}</p>
+                <p><strong>Telefone:</strong> {profissional.telefone}</p>
+                <p><strong>Cidade:</strong> {profissional.cidade}</p>
+                <p><strong>Especialidade:</strong> {profissional.especialidade}</p>
 
-                <p style={{ margin: "0 0 8px 0" }}>
-                  <strong>Telefone:</strong> {profissional.telefone}
-                </p>
-
-                <p style={{ margin: "0 0 8px 0" }}>
-                  <strong>Cidade:</strong> {profissional.cidade}
-                </p>
-
-                <p style={{ margin: "0 0 18px 0" }}>
-                  <strong>Especialidade:</strong> {profissional.especialidade}
-                </p>
-
-                <a
-                  href={`https://wa.me/55${profissional.telefone.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    textDecoration: "none",
-                  }}
-                >
-                  <button
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      background:
-                        "linear-gradient(135deg, #ffe066 0%, #ffb300 60%, #ff8f00 100%)",
-                      color: "#0b2c6b",
-                      border: "none",
-                      borderRadius: "12px",
-                      cursor: "pointer",
-                      boxShadow: "0 12px 30px rgba(255, 193, 7, 0.35)",
-                    }}
+                <div style={botoes}>
+                  <a
+                    href={`https://wa.me/55${profissional.telefone.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ flex: 1 }}
                   >
-                    Falar no WhatsApp
+                    <button style={botaoWhatsapp}>
+                      WhatsApp
+                    </button>
+                  </a>
+
+                  <button
+                    onClick={() => excluirProfissional(profissional.id)}
+                    style={botaoExcluir}
+                  >
+                    Excluir
                   </button>
-                </a>
+                </div>
               </div>
             ))}
           </div>
         )}
 
         <div style={{ marginTop: "24px" }}>
-          <a
-            href="/"
-            style={{
-              color: "#ffffff",
-              textDecoration: "none",
-              opacity: 0.9,
-            }}
-          >
-            Voltar para a página inicial
+          <a href="/" style={voltar}>
+            ← Voltar para a página inicial
           </a>
         </div>
       </div>
     </main>
   );
 }
+
+/* ===== ESTILOS ===== */
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: "18px",
+};
+
+const card = {
+  background: "rgba(255,255,255,0.10)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  backdropFilter: "blur(6px)",
+  borderRadius: "20px",
+  padding: "22px",
+  boxShadow: "0 20px 60px rgba(0,0,0,0.20)",
+};
+
+const cardVazio = {
+  background: "rgba(255,255,255,0.10)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  borderRadius: "20px",
+  padding: "24px",
+};
+
+const nome = {
+  margin: "0 0 12px 0",
+  fontSize: "22px",
+  color: "#ffd54a",
+};
+
+const botoes = {
+  display: "flex",
+  gap: "8px",
+  marginTop: "16px",
+};
+
+const botaoWhatsapp = {
+  width: "100%",
+  padding: "12px",
+  fontSize: "14px",
+  fontWeight: "bold",
+  background: "#ffd54a",
+  color: "#0b2c6b",
+  border: "none",
+  borderRadius: "10px",
+  cursor: "pointer",
+};
+
+const botaoExcluir = {
+  padding: "12px",
+  fontSize: "14px",
+  fontWeight: "bold",
+  background: "#ff4d4d",
+  color: "#fff",
+  border: "none",
+  borderRadius: "10px",
+  cursor: "pointer",
+};
+
+const voltar = {
+  color: "#ffffff",
+  textDecoration: "none",
+  opacity: 0.9,
+};
