@@ -27,7 +27,7 @@ export default function ProfissionaisPage() {
         padding: "24px",
         fontFamily: "Arial, sans-serif",
         background:
-          "linear-gradient(135deg, #0b2c6b 0%, #1147a8 45%, #1c63d5 100%)",
+          "linear-gradient(135deg, #0a1f44 0%, #0d2f6f 50%, #1c63d5 100%)",
       }}
     >
       <div
@@ -57,7 +57,6 @@ export default function ProfissionaisPage() {
           style={{
             fontSize: "40px",
             margin: "0 0 12px 0",
-            textShadow: "0 4px 18px rgba(0,0,0,0.25)",
           }}
         >
           Encontre um profissional

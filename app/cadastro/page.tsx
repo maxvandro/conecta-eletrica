@@ -49,7 +49,7 @@ export default function Cadastro() {
         padding: "24px",
         fontFamily: "Arial, sans-serif",
         background:
-          "linear-gradient(135deg, #0b2c6b 0%, #1147a8 45%, #1c63d5 100%)",
+          "linear-gradient(135deg, #0a1f44 0%, #0d2f6f 50%, #1c63d5 100%)",
       }}
     >
       <div
@@ -87,7 +87,6 @@ export default function Cadastro() {
             margin: "0 0 10px 0",
             lineHeight: "1.1",
             color: "#ffffff",
-            textShadow: "0 4px 18px rgba(0,0,0,0.25)",
           }}
         >
           Entre para o Conecta Elétrica
