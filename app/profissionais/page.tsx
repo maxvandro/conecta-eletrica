@@ -14,7 +14,7 @@ type Profissional = {
 
 export default function ProfissionaisPage() {
   const [dados, setDados] = useState<Profissional[]>([]);
-  const [mensagem, setMensagem] = useState("Carregando...");
+  const [mensagem, setMensagem] = useState("Carregando profissionais...");
 
   async function carregar() {
     const { data, error } = await supabase
@@ -24,7 +24,7 @@ export default function ProfissionaisPage() {
       .order("id", { ascending: false });
 
     if (error) {
-      console.error("Erro ao carregar:", error);
+      console.error(error);
       setMensagem("Erro ao carregar: " + error.message);
       return;
     }
@@ -43,135 +43,50 @@ export default function ProfissionaisPage() {
   }, []);
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #0a1f44 0%, #0d2f6f 55%, #1c63d5 100%)",
-        color: "#fff",
-        fontFamily: "Arial, sans-serif",
-        padding: "24px",
-      }}
-    >
-      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-        <div
-          style={{
-            display: "inline-block",
-            padding: "10px 18px",
-            borderRadius: "999px",
-            border: "1px solid rgba(255, 215, 92, 0.45)",
-            background: "rgba(255,255,255,0.08)",
-            color: "#f5d35a",
-            fontWeight: "bold",
-            marginBottom: "24px",
-          }}
-        >
-          Profissionais aprovados
-        </div>
+    <main style={pageStyle}>
+      <div style={containerStyle}>
+        <div style={badgeStyle}>Profissionais aprovados</div>
 
-        <h1
-          style={{
-            fontSize: "56px",
-            lineHeight: "1.05",
-            margin: "0 0 16px 0",
-            maxWidth: "700px",
-          }}
-        >
-          Encontre um profissional
-        </h1>
+        <h1 style={titleStyle}>Encontre um profissional</h1>
 
-        <p
-          style={{
-            fontSize: "18px",
-            lineHeight: "1.6",
-            marginBottom: "28px",
-            maxWidth: "760px",
-            color: "rgba(255,255,255,0.92)",
-          }}
-        >
-          Veja os profissionais disponíveis e escolha quem faz mais sentido para o seu atendimento.
+        <p style={subtitleStyle}>
+          Consulte profissionais aprovados na plataforma e escolha quem faz mais
+          sentido para o seu atendimento.
         </p>
 
         {mensagem && dados.length === 0 ? (
-          <div
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "20px",
-              padding: "24px",
-              fontSize: "18px",
-            }}
-          >
-            {mensagem}
-          </div>
+          <div style={emptyBoxStyle}>{mensagem}</div>
         ) : dados.length === 0 ? (
-          <div
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "20px",
-              padding: "24px",
-              fontSize: "18px",
-            }}
-          >
+          <div style={emptyBoxStyle}>
             Nenhum profissional aprovado no momento.
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "18px",
-            }}
-          >
+          <div style={gridStyle}>
             {dados.map((p) => (
-              <div
-                key={p.id}
-                style={{
-                  background: "rgba(255,255,255,0.10)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  borderRadius: "22px",
-                  padding: "22px",
-                  boxShadow: "0 18px 45px rgba(0,0,0,0.18)",
-                }}
-              >
-                <h2
-                  style={{
-                    marginTop: 0,
-                    marginBottom: "16px",
-                    color: "#f5d35a",
-                    fontSize: "22px",
-                  }}
-                >
-                  {p.nome}
-                </h2>
+              <div key={p.id} style={cardStyle}>
+                <div style={cardHeaderStyle}>
+                  <h2 style={cardTitleStyle}>{p.nome}</h2>
+                  <span style={verifiedBadgeStyle}>Verificado</span>
+                </div>
 
                 <p style={textStyle}>
                   <strong>Telefone:</strong> {p.telefone}
                 </p>
-
                 <p style={textStyle}>
                   <strong>Cidade:</strong> {p.cidade}
                 </p>
-
                 <p style={textStyle}>
                   <strong>Especialidade:</strong> {p.especialidade}
                 </p>
 
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "12px",
-                    marginTop: "20px",
-                  }}
-                >
+                <div style={{ marginTop: 18 }}>
                   <a
                     href={montarLinkWhatsapp(p.telefone)}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ flex: 1 }}
+                    style={{ display: "block" }}
                   >
-                    <button style={botaoWhatsapp}>WhatsApp</button>
+                    <button style={buttonWhatsappStyle}>Falar no WhatsApp</button>
                   </a>
                 </div>
               </div>
@@ -179,31 +94,23 @@ export default function ProfissionaisPage() {
           </div>
         )}
 
-        <div style={{ marginTop: "24px" }}>
-          <a href="/" style={{ color: "#ffffff", textDecoration: "none" }}>
-            ← Voltar para a página inicial
-          </a>
-        </div>
-
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "16px",
-            background: "rgba(255,255,255,0.08)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "14px",
-          }}
-        >
-          <p style={{ margin: 0, marginBottom: "10px" }}>
-            Deseja remover ou alterar seus dados?
+        <div style={supportBoxStyle}>
+          <p style={{ margin: "0 0 10px 0", fontWeight: 600 }}>
+            Precisa alterar ou remover seus dados?
           </p>
           <a
             href="https://wa.me/5591991982808"
             target="_blank"
             rel="noreferrer"
-            style={{ color: "#ffd54a", textDecoration: "none", fontWeight: "bold" }}
+            style={linkGoldStyle}
           >
-            Solicitar remoção ou atualização dos dados
+            Solicitar atualização ou remoção dos dados
+          </a>
+        </div>
+
+        <div style={{ marginTop: 22 }}>
+          <a href="/" style={backLinkStyle}>
+            ← Voltar para a página inicial
           </a>
         </div>
       </div>
@@ -211,13 +118,99 @@ export default function ProfissionaisPage() {
   );
 }
 
+const pageStyle: React.CSSProperties = {
+  minHeight: "100vh",
+  background: "linear-gradient(135deg, #081a3a 0%, #0c2a66 55%, #1a5fd0 100%)",
+  color: "#fff",
+  fontFamily: "Arial, sans-serif",
+  padding: "24px",
+};
+
+const containerStyle: React.CSSProperties = {
+  maxWidth: "1100px",
+  margin: "0 auto",
+};
+
+const badgeStyle: React.CSSProperties = {
+  display: "inline-block",
+  padding: "10px 18px",
+  borderRadius: 999,
+  border: "1px solid rgba(255, 213, 74, 0.45)",
+  background: "rgba(255,255,255,0.08)",
+  color: "#f5d35a",
+  fontWeight: "bold",
+  marginBottom: 24,
+};
+
+const titleStyle: React.CSSProperties = {
+  fontSize: "56px",
+  lineHeight: 1.05,
+  margin: "0 0 16px 0",
+  maxWidth: "700px",
+};
+
+const subtitleStyle: React.CSSProperties = {
+  fontSize: "18px",
+  lineHeight: 1.6,
+  marginBottom: "28px",
+  maxWidth: "760px",
+  color: "rgba(255,255,255,0.92)",
+};
+
+const emptyBoxStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "20px",
+  padding: "24px",
+  fontSize: "18px",
+};
+
+const gridStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+  gap: "18px",
+};
+
+const cardStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.10)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  borderRadius: "22px",
+  padding: "22px",
+  boxShadow: "0 18px 45px rgba(0,0,0,0.18)",
+};
+
+const cardHeaderStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "12px",
+  alignItems: "center",
+  marginBottom: "14px",
+  flexWrap: "wrap",
+};
+
+const cardTitleStyle: React.CSSProperties = {
+  margin: 0,
+  color: "#f5d35a",
+  fontSize: "24px",
+};
+
+const verifiedBadgeStyle: React.CSSProperties = {
+  background: "rgba(217,244,106,0.18)",
+  color: "#d9f46a",
+  border: "1px solid rgba(217,244,106,0.35)",
+  padding: "6px 10px",
+  borderRadius: 999,
+  fontSize: "12px",
+  fontWeight: "bold",
+};
+
 const textStyle: React.CSSProperties = {
   margin: "0 0 10px 0",
   fontSize: "16px",
-  lineHeight: "1.5",
+  lineHeight: 1.5,
 };
 
-const botaoWhatsapp: React.CSSProperties = {
+const buttonWhatsappStyle: React.CSSProperties = {
   width: "100%",
   padding: "14px",
   borderRadius: "12px",
@@ -227,4 +220,23 @@ const botaoWhatsapp: React.CSSProperties = {
   fontWeight: "bold",
   fontSize: "16px",
   cursor: "pointer",
+};
+
+const supportBoxStyle: React.CSSProperties = {
+  marginTop: "24px",
+  padding: "18px",
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: "16px",
+};
+
+const linkGoldStyle: React.CSSProperties = {
+  color: "#ffd54a",
+  textDecoration: "none",
+  fontWeight: "bold",
+};
+
+const backLinkStyle: React.CSSProperties = {
+  color: "#ffffff",
+  textDecoration: "none",
 };
