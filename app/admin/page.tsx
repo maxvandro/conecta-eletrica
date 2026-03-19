@@ -15,7 +15,32 @@ type Profissional = {
 
 export default function AdminPage() {
   const [dados, setDados] = useState<Profissional[]>([]);
-  const [mensagem, setMensagem] = useState("Carregando...");
+  const [mensagem, setMensagem] = useState("Digite a senha para acessar");
+  const [senha, setSenha] = useState("");
+  const [autorizado, setAutorizado] = useState(false);
+
+  async function verificarSenha() {
+    try {
+      const resposta = await fetch("/api/admin-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ senha }),
+      });
+
+      const resultado = await resposta.json();
+
+      if (resultado.ok) {
+        setAutorizado(true);
+        setMensagem("");
+      } else {
+        setMensagem("Senha incorreta");
+      }
+    } catch (error) {
+      setMensagem("Erro ao verificar senha");
+    }
+  }
 
   async function carregar() {
     const { data, error } = await supabase
@@ -47,70 +72,145 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    carregar();
-  }, []);
+    if (autorizado) {
+      carregar();
+    }
+  }, [autorizado]);
+
+  if (!autorizado) {
+    return (
+      <main
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "linear-gradient(135deg, #0a1f44 0%, #0d2f6f 55%, #1c63d5 100%)",
+          color: "#fff",
+          fontFamily: "Arial, sans-serif",
+          padding: "24px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "420px",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: "18px",
+            padding: "24px",
+          }}
+        >
+          <h1 style={{ marginTop: 0 }}>Acesso ao Admin</h1>
+
+          <input
+            type="password"
+            placeholder="Digite a senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "14px",
+              borderRadius: "10px",
+              border: "none",
+              fontSize: "16px",
+              marginBottom: "12px",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+
+          <button
+            onClick={verificarSenha}
+            style={{
+              width: "100%",
+              padding: "14px",
+              borderRadius: "10px",
+              border: "none",
+              fontSize: "16px",
+              fontWeight: "bold",
+              background: "#d9f46a",
+              color: "#15316b",
+              cursor: "pointer",
+            }}
+          >
+            Entrar
+          </button>
+
+          <p style={{ marginTop: "14px" }}>{mensagem}</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main
       style={{
         minHeight: "100vh",
         padding: "24px",
-        background: "#0a1f44",
+        background:
+          "linear-gradient(135deg, #0a1f44 0%, #0d2f6f 55%, #1c63d5 100%)",
         color: "#fff",
-        fontFamily: "Arial",
+        fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1>Painel Admin</h1>
+      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+        <h1>Painel Admin</h1>
 
-      {mensagem && <p>{mensagem}</p>}
+        {mensagem && <p>{mensagem}</p>}
 
-      <div style={{ display: "grid", gap: "16px" }}>
-        {dados.map((p) => (
-          <div
-            key={p.id}
-            style={{
-              background: "#122b63",
-              padding: "16px",
-              borderRadius: "12px",
-            }}
-          >
-            <h3>{p.nome}</h3>
+        <div style={{ display: "grid", gap: "16px" }}>
+          {dados.map((p) => (
+            <div
+              key={p.id}
+              style={{
+                background: "rgba(255,255,255,0.10)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                borderRadius: "18px",
+                padding: "18px",
+              }}
+            >
+              <h3 style={{ marginTop: 0 }}>{p.nome}</h3>
 
-            <p>Cidade: {p.cidade}</p>
-            <p>Telefone: {p.telefone}</p>
-            <p>Email: {p.email}</p>
-            <p>Especialidade: {p.especialidade}</p>
-            <p>Status: {p.status}</p>
+              <p>Cidade: {p.cidade}</p>
+              <p>Telefone: {p.telefone}</p>
+              <p>Email: {p.email}</p>
+              <p>Especialidade: {p.especialidade}</p>
+              <p>Status: {p.status}</p>
 
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                onClick={() => atualizarStatus(p.id, "aprovado")}
-                style={{
-                  background: "green",
-                  color: "#fff",
-                  padding: "8px",
-                  border: "none",
-                  borderRadius: "6px",
-                }}
-              >
-                Aprovar
-              </button>
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                <button
+                  onClick={() => atualizarStatus(p.id, "aprovado")}
+                  style={{
+                    background: "green",
+                    color: "#fff",
+                    padding: "10px 14px",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Aprovar
+                </button>
 
-              <button
-                onClick={() => atualizarStatus(p.id, "bloqueado")}
-                style={{
-                  background: "red",
-                  color: "#fff",
-                  padding: "8px",
-                  border: "none",
-                  borderRadius: "6px",
-                }}
-              >
-                Bloquear
-              </button>
+                <button
+                  onClick={() => atualizarStatus(p.id, "bloqueado")}
+                  style={{
+                    background: "red",
+                    color: "#fff",
+                    padding: "10px 14px",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Bloquear
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </main>
   );
