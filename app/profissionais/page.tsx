@@ -9,6 +9,7 @@ type Profissional = {
   cidade: string;
   telefone: string;
   especialidade: string;
+  email: string;
 };
 
 export default function ProfissionaisPage() {
@@ -135,9 +136,15 @@ export default function ProfissionaisPage() {
                 <p style={textStyle}>
                   <strong>Telefone:</strong> {p.telefone}
                 </p>
+
+                <p style={textStyle}>
+                  <strong>E-mail:</strong> {p.email}
+                </p>
+
                 <p style={textStyle}>
                   <strong>Cidade:</strong> {p.cidade}
                 </p>
+
                 <p style={textStyle}>
                   <strong>Especialidade:</strong> {p.especialidade}
                 </p>
@@ -155,9 +162,7 @@ export default function ProfissionaisPage() {
                     rel="noreferrer"
                     style={{ flex: 1 }}
                   >
-                    <button style={botaoWhatsapp}>
-                      WhatsApp
-                    </button>
+                    <button style={botaoWhatsapp}>WhatsApp</button>
                   </a>
                 </div>
               </div>

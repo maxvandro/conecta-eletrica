@@ -8,6 +8,7 @@ export default function CadastroPage() {
   const [cidade, setCidade] = useState("");
   const [telefone, setTelefone] = useState("");
   const [especialidade, setEspecialidade] = useState("");
+  const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -20,6 +21,7 @@ export default function CadastroPage() {
         cidade,
         telefone,
         especialidade,
+        email,
       },
     ]);
 
@@ -34,6 +36,7 @@ export default function CadastroPage() {
     setCidade("");
     setTelefone("");
     setEspecialidade("");
+    setEmail("");
   }
 
   return (
@@ -103,6 +106,15 @@ export default function CadastroPage() {
             style={inputStyle}
           />
 
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="E-mail"
+            required
+            style={inputStyle}
+          />
+
           <button type="submit" style={buttonStyle}>
             Cadastrar
           </button>
@@ -110,7 +122,10 @@ export default function CadastroPage() {
 
         <p style={{ marginTop: "16px", minHeight: "24px" }}>{mensagem}</p>
 
-        <a href="/profissionais" style={{ color: "#ffd54a", textDecoration: "none" }}>
+        <a
+          href="/profissionais"
+          style={{ color: "#ffd54a", textDecoration: "none" }}
+        >
           Ver profissionais
         </a>
       </div>
