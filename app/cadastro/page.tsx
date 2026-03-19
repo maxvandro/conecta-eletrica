@@ -22,6 +22,7 @@ export default function CadastroPage() {
         telefone,
         especialidade,
         email,
+        status: "pendente", // 🔥 AQUI ESTÁ O CONTROLE
       },
     ]);
 
@@ -31,7 +32,7 @@ export default function CadastroPage() {
       return;
     }
 
-    setMensagem("Cadastrado com sucesso!");
+    setMensagem("Cadastro enviado! Aguarde aprovação.");
     setNome("");
     setCidade("");
     setTelefone("");
@@ -61,10 +62,9 @@ export default function CadastroPage() {
           border: "1px solid rgba(255,255,255,0.15)",
           borderRadius: "18px",
           padding: "24px",
-          boxShadow: "0 18px 45px rgba(0,0,0,0.20)",
         }}
       >
-        <h1 style={{ marginTop: 0, marginBottom: "18px" }}>Cadastro</h1>
+        <h1>Cadastro de Profissional</h1>
 
         <form
           onSubmit={handleSubmit}
@@ -75,79 +75,48 @@ export default function CadastroPage() {
           }}
         >
           <input
+            placeholder="Nome"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
-            placeholder="Nome"
             required
-            style={inputStyle}
           />
 
           <input
+            placeholder="Cidade"
             value={cidade}
             onChange={(e) => setCidade(e.target.value)}
-            placeholder="Cidade"
             required
-            style={inputStyle}
           />
 
           <input
+            placeholder="Telefone"
             value={telefone}
             onChange={(e) => setTelefone(e.target.value)}
-            placeholder="Telefone com DDD"
             required
-            style={inputStyle}
           />
 
           <input
+            placeholder="Especialidade"
             value={especialidade}
             onChange={(e) => setEspecialidade(e.target.value)}
-            placeholder="Especialidade"
             required
-            style={inputStyle}
           />
 
           <input
             type="email"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="E-mail"
             required
-            style={inputStyle}
           />
 
-          <button type="submit" style={buttonStyle}>
-            Cadastrar
-          </button>
+          <button type="submit">Cadastrar</button>
         </form>
 
-        <p style={{ marginTop: "16px", minHeight: "24px" }}>{mensagem}</p>
+        <p>{mensagem}</p>
 
-        <a
-          href="/profissionais"
-          style={{ color: "#ffd54a", textDecoration: "none" }}
-        >
-          Ver profissionais
-        </a>
+        <a href="/profissionais">Ver profissionais</a>
       </div>
     </main>
   );
 }
-
-const inputStyle: React.CSSProperties = {
-  padding: "14px",
-  borderRadius: "10px",
-  border: "none",
-  fontSize: "16px",
-  outline: "none",
-};
-
-const buttonStyle: React.CSSProperties = {
-  padding: "14px",
-  borderRadius: "10px",
-  border: "none",
-  fontSize: "16px",
-  fontWeight: "bold",
-  background: "#d9f46a",
-  color: "#15316b",
-  cursor: "pointer",
-};
