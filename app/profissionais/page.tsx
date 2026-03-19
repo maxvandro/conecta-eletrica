@@ -31,21 +31,6 @@ export default function ProfissionaisPage() {
     setMensagem("");
   }
 
-  async function excluir(id: number) {
-    const confirmar = window.confirm("Deseja realmente excluir este profissional?");
-    if (!confirmar) return;
-
-    const { error } = await supabase.from("profissionais").delete().eq("id", id);
-
-    if (error) {
-      console.error("Erro ao excluir:", error);
-      alert("Erro ao excluir: " + error.message);
-      return;
-    }
-
-    carregar();
-  }
-
   function montarLinkWhatsapp(telefone: string) {
     const numeroLimpo = telefone.replace(/\D/g, "");
     return `https://wa.me/55${numeroLimpo}`;
@@ -174,13 +159,6 @@ export default function ProfissionaisPage() {
                       WhatsApp
                     </button>
                   </a>
-
-                  <button
-                    onClick={() => excluir(p.id)}
-                    style={botaoExcluir}
-                  >
-                    Excluir
-                  </button>
                 </div>
               </div>
             ))}
@@ -210,17 +188,6 @@ const botaoWhatsapp: React.CSSProperties = {
   border: "none",
   background: "#f1d35a",
   color: "#17326d",
-  fontWeight: "bold",
-  fontSize: "16px",
-  cursor: "pointer",
-};
-
-const botaoExcluir: React.CSSProperties = {
-  padding: "14px 18px",
-  borderRadius: "12px",
-  border: "none",
-  background: "#f05d57",
-  color: "#fff",
   fontWeight: "bold",
   fontSize: "16px",
   cursor: "pointer",
