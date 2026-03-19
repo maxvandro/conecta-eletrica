@@ -33,9 +33,36 @@ export default function ProfissionaisPage() {
     setMensagem("");
   }
 
+  function limparTelefone(telefone: string) {
+    let numero = telefone.replace(/\D/g, "");
+
+    // Remove código do país se vier com 55 na frente
+    if (numero.length >= 12 && numero.startsWith("55")) {
+      numero = numero.slice(2);
+    }
+
+    return numero;
+  }
+
   function montarLinkWhatsapp(telefone: string) {
-    const numeroLimpo = telefone.replace(/\D/g, "");
+    const numeroLimpo = limparTelefone(telefone);
     return `https://wa.me/55${numeroLimpo}`;
+  }
+
+  function mascararTelefone(telefone: string) {
+    const numeroLimpo = limparTelefone(telefone);
+
+    // Esperado no Brasil:
+    // 10 dígitos = DDD + 8 dígitos
+    // 11 dígitos = DDD + 9 dígitos
+    if (numeroLimpo.length < 10) {
+      return telefone;
+    }
+
+    const ddd = numeroLimpo.slice(0, 2);
+    const final = numeroLimpo.slice(-4);
+
+    return `(${ddd}) XXXXX-${final}`;
   }
 
   useEffect(() => {
@@ -70,11 +97,13 @@ export default function ProfissionaisPage() {
                 </div>
 
                 <p style={textStyle}>
-                  <strong>Telefone:</strong> {p.telefone}
+                  <strong>Telefone:</strong> {mascararTelefone(p.telefone)}
                 </p>
+
                 <p style={textStyle}>
                   <strong>Cidade:</strong> {p.cidade}
                 </p>
+
                 <p style={textStyle}>
                   <strong>Especialidade:</strong> {p.especialidade}
                 </p>
@@ -99,7 +128,7 @@ export default function ProfissionaisPage() {
             Precisa alterar ou remover seus dados?
           </p>
           <a
-            href="https://wa.me/5591991982808"
+            href="https://wa.me/5591999999999"
             target="_blank"
             rel="noreferrer"
             style={linkGoldStyle}
