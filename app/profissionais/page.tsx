@@ -1,199 +1,97 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 type Profissional = {
   id: number;
   nome: string;
-  email: string;
-  telefone: string;
   cidade: string;
-  especialidade: string;
 };
 
 export default function ProfissionaisPage() {
-  const [profissionais, setProfissionais] = useState<Profissional[]>([]);
+  const [dados, setDados] = useState<Profissional[]>([]);
+  const [mensagem, setMensagem] = useState("Carregando...");
+
+  async function carregar() {
+    const { data, error } = await supabase
+      .from("profissionais")
+      .select("*")
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.error("Erro ao carregar:", error);
+      setMensagem("Erro ao carregar: " + error.message);
+      return;
+    }
+
+    setDados(data || []);
+    setMensagem("");
+  }
+
+  async function excluir(id: number) {
+    const { error } = await supabase.from("profissionais").delete().eq("id", id);
+
+    if (error) {
+      console.error("Erro ao excluir:", error);
+      alert("Erro ao excluir: " + error.message);
+      return;
+    }
+
+    carregar();
+  }
 
   useEffect(() => {
-    const profissionaisSalvos = localStorage.getItem("profissionais");
-    const lista = profissionaisSalvos ? JSON.parse(profissionaisSalvos) : [];
-    setProfissionais(lista);
+    carregar();
   }, []);
-
-  function excluirProfissional(id: number) {
-    const confirmar = confirm("Tem certeza que deseja excluir este profissional?");
-    if (!confirmar) return;
-
-    const atualizados = profissionais.filter((p) => p.id !== id);
-
-    localStorage.setItem("profissionais", JSON.stringify(atualizados));
-    setProfissionais(atualizados);
-  }
 
   return (
     <main
       style={{
         minHeight: "100vh",
-        padding: "24px",
+        background: "#0a1f44",
+        color: "#fff",
         fontFamily: "Arial, sans-serif",
-        background:
-          "linear-gradient(135deg, #0a1f44 0%, #0d2f6f 50%, #1c63d5 100%)",
+        padding: "24px",
       }}
     >
-      <div
-        style={{
-          maxWidth: "1000px",
-          margin: "0 auto",
-          color: "#ffffff",
-        }}
-      >
+      <h1>Profissionais</h1>
+
+      {mensagem && <p>{mensagem}</p>}
+
+      {dados.map((p) => (
         <div
+          key={p.id}
           style={{
-            display: "inline-block",
-            padding: "8px 16px",
-            borderRadius: "999px",
-            backgroundColor: "rgba(255, 210, 60, 0.18)",
-            border: "1px solid rgba(255, 210, 60, 0.45)",
-            color: "#ffd54a",
-            fontWeight: "bold",
-            fontSize: "14px",
-            marginBottom: "18px",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: "12px",
+            padding: "16px",
+            marginBottom: "12px",
           }}
         >
-          Profissionais cadastrados
+          <p><strong>Nome:</strong> {p.nome}</p>
+          <p><strong>Cidade:</strong> {p.cidade}</p>
+
+          <button
+            onClick={() => excluir(p.id)}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "8px",
+              border: "none",
+              background: "#ff4d4d",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Excluir
+          </button>
         </div>
+      ))}
 
-        <h1
-          style={{
-            fontSize: "40px",
-            margin: "0 0 12px 0",
-          }}
-        >
-          Encontre um profissional
-        </h1>
-
-        <p
-          style={{
-            fontSize: "16px",
-            lineHeight: "1.6",
-            color: "rgba(255,255,255,0.92)",
-            marginBottom: "28px",
-            maxWidth: "700px",
-          }}
-        >
-          Veja os profissionais disponíveis e escolha quem faz mais sentido para o seu atendimento.
-        </p>
-
-        {profissionais.length === 0 ? (
-          <div style={cardVazio}>
-            <p style={{ margin: 0 }}>Nenhum profissional cadastrado ainda.</p>
-          </div>
-        ) : (
-          <div style={grid}>
-            {profissionais.map((profissional) => (
-              <div key={profissional.id} style={card}>
-                <h2 style={nome}>{profissional.nome}</h2>
-
-                <p><strong>Email:</strong> {profissional.email}</p>
-                <p><strong>Telefone:</strong> {profissional.telefone}</p>
-                <p><strong>Cidade:</strong> {profissional.cidade}</p>
-                <p><strong>Especialidade:</strong> {profissional.especialidade}</p>
-
-                <div style={botoes}>
-                  <a
-                    href={`https://wa.me/55${profissional.telefone.replace(/\D/g, "")}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ flex: 1 }}
-                  >
-                    <button style={botaoWhatsapp}>
-                      WhatsApp
-                    </button>
-                  </a>
-
-                  <button
-                    onClick={() => excluirProfissional(profissional.id)}
-                    style={botaoExcluir}
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div style={{ marginTop: "24px" }}>
-          <a href="/" style={voltar}>
-            ← Voltar para a página inicial
-          </a>
-        </div>
-      </div>
+      <a href="/cadastro" style={{ color: "#ffd54a" }}>
+        Ir para cadastro
+      </a>
     </main>
   );
 }
-
-/* ===== ESTILOS ===== */
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  gap: "18px",
-};
-
-const card = {
-  background: "rgba(255,255,255,0.10)",
-  border: "1px solid rgba(255,255,255,0.18)",
-  backdropFilter: "blur(6px)",
-  borderRadius: "20px",
-  padding: "22px",
-  boxShadow: "0 20px 60px rgba(0,0,0,0.20)",
-};
-
-const cardVazio = {
-  background: "rgba(255,255,255,0.10)",
-  border: "1px solid rgba(255,255,255,0.18)",
-  borderRadius: "20px",
-  padding: "24px",
-};
-
-const nome = {
-  margin: "0 0 12px 0",
-  fontSize: "22px",
-  color: "#ffd54a",
-};
-
-const botoes = {
-  display: "flex",
-  gap: "8px",
-  marginTop: "16px",
-};
-
-const botaoWhatsapp = {
-  width: "100%",
-  padding: "12px",
-  fontSize: "14px",
-  fontWeight: "bold",
-  background: "#ffd54a",
-  color: "#0b2c6b",
-  border: "none",
-  borderRadius: "10px",
-  cursor: "pointer",
-};
-
-const botaoExcluir = {
-  padding: "12px",
-  fontSize: "14px",
-  fontWeight: "bold",
-  background: "#ff4d4d",
-  color: "#fff",
-  border: "none",
-  borderRadius: "10px",
-  cursor: "pointer",
-};
-
-const voltar = {
-  color: "#ffffff",
-  textDecoration: "none",
-  opacity: 0.9,
-};
