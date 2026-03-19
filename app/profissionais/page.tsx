@@ -10,6 +10,7 @@ type Profissional = {
   telefone: string;
   especialidade: string;
   email: string;
+  status: string;
 };
 
 export default function ProfissionaisPage() {
@@ -20,6 +21,7 @@ export default function ProfissionaisPage() {
     const { data, error } = await supabase
       .from("profissionais")
       .select("*")
+      .eq("status", "aprovado")
       .order("id", { ascending: false });
 
     if (error) {
@@ -102,6 +104,18 @@ export default function ProfissionaisPage() {
             }}
           >
             {mensagem}
+          </div>
+        ) : dados.length === 0 ? (
+          <div
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "24px",
+              fontSize: "18px",
+            }}
+          >
+            Nenhum profissional aprovado no momento.
           </div>
         ) : (
           <div
