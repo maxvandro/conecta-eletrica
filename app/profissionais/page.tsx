@@ -9,7 +9,6 @@ type Profissional = {
   cidade: string;
   telefone: string;
   especialidade: string;
-  email: string;
   status: string;
 };
 
@@ -20,7 +19,7 @@ export default function ProfissionaisPage() {
   async function carregar() {
     const { data, error } = await supabase
       .from("profissionais")
-      .select("*")
+      .select("id, nome, cidade, telefone, especialidade, status")
       .eq("status", "aprovado")
       .order("id", { ascending: false });
 
@@ -67,7 +66,7 @@ export default function ProfissionaisPage() {
             marginBottom: "24px",
           }}
         >
-          Profissionais cadastrados
+          Profissionais aprovados
         </div>
 
         <h1
@@ -152,10 +151,6 @@ export default function ProfissionaisPage() {
                 </p>
 
                 <p style={textStyle}>
-                  <strong>E-mail:</strong> {p.email}
-                </p>
-
-                <p style={textStyle}>
                   <strong>Cidade:</strong> {p.cidade}
                 </p>
 
@@ -187,6 +182,28 @@ export default function ProfissionaisPage() {
         <div style={{ marginTop: "24px" }}>
           <a href="/" style={{ color: "#ffffff", textDecoration: "none" }}>
             ← Voltar para a página inicial
+          </a>
+        </div>
+
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "16px",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: "14px",
+          }}
+        >
+          <p style={{ margin: 0, marginBottom: "10px" }}>
+            Deseja remover ou alterar seus dados?
+          </p>
+          <a
+            href="https://wa.me/5591991982808"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "#ffd54a", textDecoration: "none", fontWeight: "bold" }}
+          >
+            Solicitar remoção ou atualização dos dados
           </a>
         </div>
       </div>

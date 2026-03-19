@@ -11,6 +11,8 @@ type Profissional = {
   especialidade: string;
   email: string;
   status: string;
+  aceitou_lgpd?: boolean;
+  consentimento_em?: string;
 };
 
 export default function AdminPage() {
@@ -37,7 +39,7 @@ export default function AdminPage() {
       } else {
         setMensagem("Senha incorreta");
       }
-    } catch (error) {
+    } catch {
       setMensagem("Erro ao verificar senha");
     }
   }
@@ -64,7 +66,7 @@ export default function AdminPage() {
       .eq("id", id);
 
     if (error) {
-      alert("Erro ao atualizar");
+      alert("Erro ao atualizar status");
       return;
     }
 
@@ -155,7 +157,7 @@ export default function AdminPage() {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <h1>Painel Admin</h1>
 
         {mensagem && <p>{mensagem}</p>}
@@ -178,34 +180,34 @@ export default function AdminPage() {
               <p>Email: {p.email}</p>
               <p>Especialidade: {p.especialidade}</p>
               <p>Status: {p.status}</p>
+              <p>Aceitou LGPD: {p.aceitou_lgpd ? "Sim" : "Não"}</p>
+              <p>
+                Consentimento em:{" "}
+                {p.consentimento_em
+                  ? new Date(p.consentimento_em).toLocaleString("pt-BR")
+                  : "-"}
+              </p>
 
-              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px", flexWrap: "wrap" }}>
                 <button
                   onClick={() => atualizarStatus(p.id, "aprovado")}
-                  style={{
-                    background: "green",
-                    color: "#fff",
-                    padding: "10px 14px",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                  }}
+                  style={botaoVerde}
                 >
                   Aprovar
                 </button>
 
                 <button
                   onClick={() => atualizarStatus(p.id, "bloqueado")}
-                  style={{
-                    background: "red",
-                    color: "#fff",
-                    padding: "10px 14px",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                  }}
+                  style={botaoVermelho}
                 >
                   Bloquear
+                </button>
+
+                <button
+                  onClick={() => atualizarStatus(p.id, "pendente")}
+                  style={botaoAmarelo}
+                >
+                  Voltar para pendente
                 </button>
               </div>
             </div>
@@ -215,3 +217,30 @@ export default function AdminPage() {
     </main>
   );
 }
+
+const botaoVerde: React.CSSProperties = {
+  background: "green",
+  color: "#fff",
+  padding: "10px 14px",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
+
+const botaoVermelho: React.CSSProperties = {
+  background: "red",
+  color: "#fff",
+  padding: "10px 14px",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
+
+const botaoAmarelo: React.CSSProperties = {
+  background: "#d9f46a",
+  color: "#15316b",
+  padding: "10px 14px",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
